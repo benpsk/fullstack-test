@@ -26,6 +26,7 @@ class FilterRequest extends FormRequest
             'order_by' => 'nullable|in:price,created_at',
             'order' => 'nullable|in:asc,desc',
             'per_page' => 'nullable|gte:1',
+            'province' => 'nullable|exists:locations,province',
         ];
     }
 }

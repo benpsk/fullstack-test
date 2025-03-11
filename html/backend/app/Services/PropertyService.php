@@ -8,26 +8,34 @@ use Illuminate\Database\Eloquent\Builder;
 class PropertyService
 {
     public function get(array $input)
-    {
-        $title = $input['title'] ?? '';
-        $order_by = $input['order_by'] ?? '';
-        $order = $input['order'] ?? '';
+{
+    $title = $input['title'] ?? '';
+    $order_by = $input['order_by'] ?? '';
+    $order = $input['order'] ?? '';
+    $province = $input['province'] ?? '';
 
-        $data = Property::query()
-            ->when($title, function (Builder $query) use ($title) { // where
-                $query->where('title', 'like', "%$title%")
+    // TODO: should be more simpler
+    $data = Property::query()
+        ->when($province, function (Builder $query, string $province) {
+            $query->whereRelation('location', 'province', $province); // where
+        })
+        ->when($title, function (Builder $query) use ($title) {
+            $query->where(function (Builder $q) use ($title) { // and to the $province
+                $q->where('title', 'like', "%$title%")
                     ->orWhereHas('location', function (Builder $q) use ($title) {
                         $q->where('country', 'like', "%$title%")
                             ->orWhere('province', 'like', "%$title%")
                             ->orWhere('street', 'like', "%$title%");
                     });
-            })
-            ->when($order_by && $order, function (Builder $query) use ($order_by, $order) {
-                $query->orderBy($order_by, $order);
-            })
-            ->with('location', 'photo')
-            ->paginate($input['per_page'] ?? 25);
+            });
+        })
+        ->when($order_by && $order, function (Builder $query) use ($order_by, $order) {
+            $query->orderBy($order_by, $order);
+        })
+        ->with('location', 'photo')
+        ->paginate($input['per_page'] ?? 25);
 
-        return $data;
-    }
+    return $data;
+}
+
 }
