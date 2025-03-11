@@ -13,6 +13,7 @@ export default function PropertyFilter() {
   const searchParams = useSearchParams();
 
   // State for filter inputs
+  const [province, setProvince] = useState(searchParams.get("province") || "");
   const [title, setTitle] = useState(searchParams.get("title") || "");
   const [orderBy, setOrderBy] = useState(searchParams.get("order_by") || "");
   const [orderDirection, setOrderDirection] = useState(searchParams.get("order") || "");
@@ -23,6 +24,16 @@ export default function PropertyFilter() {
     { id: "Phuket", name: "Phuket" },
     { id: "texas", name: "Texas" },
   ];
+  const handleProvince = (province: string) => {
+    console.log('province');
+    const params = new URLSearchParams(searchParams.toString());
+    setProvince(province);
+    if (province) params.set("province", province);
+    else params.delete("province");
+    params.set('page', '1');
+    router.push(`/${province}?${params.toString()}`);
+  };
+
   // Handle search
   const handleSearch = () => {
     const params = new URLSearchParams(searchParams.toString());
@@ -36,6 +47,9 @@ export default function PropertyFilter() {
     if (orderDirection) params.set("order", orderDirection);
     else params.delete("order");
 
+    if (province) params.set("province", province);
+    else params.delete("province");
+
     if (!title && !orderBy && !orderDirection) return;
     router.push(`?${params.toString()}`);
   };
@@ -45,6 +59,7 @@ export default function PropertyFilter() {
     setTitle("");
     setOrderBy("");
     setOrderDirection("");
+    setProvince("");
 
     router.push("/");
   };
@@ -61,7 +76,7 @@ export default function PropertyFilter() {
           </div>
           <p className="text-muted-foreground mb-4">Select a province to view properties in that area</p>
 
-          <Select>
+          <Select onValueChange={handleProvince} value={province}>
             <SelectTrigger className="w-full md:w-[300px] h-12 text-base">
               <SelectValue placeholder="Select a province" />
             </SelectTrigger>
