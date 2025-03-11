@@ -1,3 +1,58 @@
+**Backend Setup Guide**
+
+**Pre-requirements**
+- PHP v8.2
+- Composer v2.8.5
+- Docker
+
+**1. copy env file**
+```shell
+cp .env.example .env
+```
+**2. install sail**
+```shell
+composer install
+```
+**3. build & run sail**
+```shell
+./vendor/bin/sail up
+```
+**4. run migration and seeders**
+```shell
+./vendor/bin/sail artisan migrate --seed
+```
+**5. run tests**
+```shell
+./vendor/bin/sail artisan test
+```
+**6. test the api**
+- http://localhost:80/api/properties
+__
+__
+
+**Frontend Setup Guide**
+
+**Pre-requirements**
+- Node v20.18.3
+
+**1. install dependencies**
+```shell
+npm install
+```
+**2. build**
+```shell
+npm run build
+```
+**3. serve**
+```shell
+npm run start
+```
+**4. access the app**
+- http://localhost:3000
+
+
+---
+
 # Full Stack Developer Test - FazWaz
 
 Thank you for taking the time to do our full stack technical test for [FazWaz](https://www.fazwaz.com). It consists of two parts:
